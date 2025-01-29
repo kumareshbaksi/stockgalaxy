@@ -13,3 +13,10 @@
   max-width: 1200px;
   margin: auto;
 }
+
+.git-version {
+  position: absolute;
+  left: 95%;
+  color: #00c853;
+  font-weight: bold;
+}

@@ -12,6 +12,13 @@
   justify-content: center;
 }
 
+.git-version {
+  position: absolute;
+  left: 95%;
+  color: #00c853;
+  font-weight: bold;
+}
+
 /* Footer links */
 .footer a {
   color: var(--footer-link-color);

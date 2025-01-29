@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiService from "../services/apiService"; // Centralized API service
 import "../styles/Footer.css"; // Add CSS styling for the footer
+import { FaCodeBranch } from "react-icons/fa";
 
 const Footer = () => {
   const [niftyData, setNiftyData] = useState(null);
@@ -114,6 +115,16 @@ const Footer = () => {
           </>
         )}
       </div>
+      <p className="git-version">
+        <a
+          href="https://github.com/kumareshbaksi/stockgalaxy"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <FaCodeBranch /> v1.0.0
+        </a>
+      </p>
     </footer>
   );
 };
