@@ -1,0 +1,47 @@
+.content {
+  text-align: center;
+  width: 80%; /* Adjust width as needed */
+  max-height: 80vh; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin: 20px auto; /* Center the content horizontally */
+  padding: 20px; /* Add padding for aesthetic spacing */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Optional: adds shadow for depth */
+}
+
+.content p {
+  text-align: left;
+  font-size: large;
+}
+
+strong {
+  color: #ff5555;
+}
+
+a {
+  color: #00ff00;
+}
+
+/* Custom scrollbar styling */
+.content::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+
+.content::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #888; /* Thumb color */
+  border-radius: 10px; /* Roundness of the scrollbar */
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Thumb color when hovered */
+}
+
+.refund-list {
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  flex-direction: column;
+}

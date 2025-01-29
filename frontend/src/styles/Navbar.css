@@ -1,0 +1,697 @@
+/* Navbar */
+.navbar {
+  background-color: var(--navbar-bg);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  color: var(--navbar-link-color);
+  font-size: 1.5rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Right Controls */
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Dropdown Select */
+.dropdown-select {
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  border: 1px solid var(--button-bg);
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative; /* Position relative for the icon inside */
+  appearance: none; /* Remove default dropdown arrow */
+}
+
+/* Dropdown icon using ::after */
+.dropdown-select::after {
+  content: "\25BC"; /* Unicode for downward arrow */
+  font-size: 1.2rem; /* Adjust the size of the arrow */
+  color: var(--button-color); /* Color for the arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Adjust the space between the arrow and the right edge */
+  transform: translateY(-50%);
+  pointer-events: none; /* Make sure the icon doesn't block interactions */
+}
+
+.dropdown-select:hover {
+  border-color: var(--navbar-link-hover);
+  background-color: var(--button-hover-bg);
+}.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff5555;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.user-avatar.clickable {
+  cursor: pointer;
+}
+
+.user-avatar {
+  cursor: not-allowed;
+}
+
+
+.dropdown-select:focus {
+  border-color: var(--navbar-link-hover);
+  background-color: var(--button-hover-bg);
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-controls button {
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  border: 1px solid var(--button-bg);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-controls button:hover {
+  background-color: var(--button-hover-bg);
+  border-color: var(--navbar-link-hover);
+}
+
+.pagination-controls button:disabled {
+  background-color: var(--button-disabled-bg);
+  color: var(--button-disabled-color);
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  color: var(--navbar-link-color);
+  font-size: 0.9rem;
+}
+
+/* Hamburger Button */
+.hamburger {
+  display: none; /* Hidden on larger screens */
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--navbar-link-color);
+  cursor: pointer;
+}
+
+.hamburger:focus {
+  outline: none;
+}
+
+.countdown-timer {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #00ff00;
+  margin-left: 10px;
+}
+
+.search-bar {
+  background-color: var(--button-bg); /* Use theme variable for background */
+  color: var(--button-color); /* Use theme variable for text color */
+  max-width: 200px; /* Restrict maximum width */
+  margin-left: 15px; /* Space between search bar and hamburger */
+  padding: 8px 12px;
+  border: 1px solid var(--button-bg); /* Use theme variable for border */
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none; /* Remove default outline */
+  transition: all 0.3s ease; /* Add smooth transition for hover/focus */
+}
+
+.search-bar:hover,
+.search-bar:focus {
+  border-color: var(--navbar-link-hover); /* Highlight border on hover/focus */
+  background-color: var(--button-hover-bg); /* Use hover background */
+}
+
+.search-bar::placeholder {
+  color: #bbb; /* Light gray placeholder text */
+}
+
+/* Adjust for mobile devices */
+@media (max-width: 768px) {
+  .search-bar {
+    max-width: 150px; /* Reduce width for mobile */
+    padding: 6px 10px; /* Adjust padding for smaller size */
+    font-size: 0.9rem; /* Slightly smaller font */
+  }
+}
+
+.search-nav-container {
+  display: flex;
+}
+
+.user-menu {
+  position: absolute;
+  top: 60px;
+  border: 1px solid #00ff00;
+  box-shadow: 0 2px 8px #00ff00;
+  padding: 10px 20px;
+  border-radius: 5px;
+  gap: 10px;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.menu-link {
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.menu-link:hover {
+  color: white;
+}
+
+.logout {
+  color: red;
+}
+
+.logout:hover {
+  color: red;
+}
+
+/* Select2 Styling */
+.select2-container {
+  width: 200px !important; /* Set consistent width */
+  font-size: 1rem; /* Consistent font size */
+}
+
+.select2-container:hover {
+  border-color: var(--navbar-link-hover);
+  background-color: var(--button-hover-bg);
+}
+
+.dropdown-select {
+  padding: 10px;
+}
+
+.select2-selection {
+  background-color: var(--button-bg); /* Dark background */
+  color: var(--button-color); /* White text */
+  border: 1px solid var(--navbar-link-hover); /* Highlight border */
+  border-radius: 6px; /* Rounded edges */
+  padding: 8px; /* Internal padding */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.select2-selection:hover {
+  background-color: var(--button-hover-bg); /* Lighter hover background */
+  border-color: var(--navbar-link-hover); /* Hover border */
+}
+
+.select2-selection__rendered {
+  color: var(--button-color); /* White text */
+  font-size: 1rem; /* Consistent font size */
+}
+
+.select2-selection__placeholder {
+  color: #bbb; /* Light gray for placeholder text */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100%; /* Center arrow vertically */
+  right: 10px; /* Align arrow to the right */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear {
+  color: var(--button-color); /* Clear icon matches text color */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear:hover {
+  color: var(--navbar-link-hover); /* Highlight clear icon on hover */
+}
+
+.select2-dropdown {
+  background-color: var(--button-bg); /* Dropdown dark background */
+  color: var(--button-color); /* White text */
+  border: 1px solid var(--navbar-link-hover); /* Highlight dropdown border */
+  border-radius: 6px; /* Rounded dropdown edges */
+  z-index: 1000; /* Ensure it stays on top */
+  max-height: 300px; /* Limit height to avoid excessive scrolling */
+  overflow-y: auto; /* Vertical scroll only */
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+.select2-results__option {
+  padding: 10px; /* Add padding for better readability */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.select2-results__option:hover {
+  background-color: var(--navbar-link-hover); /* Highlight option on hover */
+  color: var(--button-color); /* White text when hovered */
+}
+
+.select2-results__option[aria-selected="true"] {
+  background-color: var(--navbar-link-hover); /* Highlight selected option */
+  color: var(--button-color); /* Ensure text is white */
+}
+
+.select2-container--default .select2-results__group {
+  color: var(--button-color); /* Group headers in white */
+  background-color: var(--button-bg); /* Match dropdown background */
+  padding: 8px; /* Padding for group headers */
+  border-bottom: 1px solid var(--navbar-link-hover); /* Subtle separator */
+}
+
+.select2-container--default .select2-selection--single {
+  background-color: var(--button-bg); /* Dropdown dark background */
+  border-radius: 4px;
+  color: white;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #000; /* Adjust based on your theme */
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.logo .green {
+  color: #00ff00;
+}
+
+.logo .red {
+  color: #ff0000;
+}
+
+.search-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Space between search bar, dropdowns, and timer */
+}
+
+.search-bar {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #222;
+  color: white;
+  width: 200px; /* Adjust as needed */
+}
+
+.search-bar::placeholder {
+  color: #aaa;
+}
+
+.select2-container,
+.dropdown-select {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #222;
+  color: white;
+}
+
+.select2-container {
+  padding: 5px;
+}
+
+.dropdown-select {
+  appearance: none; /* Remove default dropdown styling */
+}
+
+.dropdown-select option {
+  background-color: #222;
+  color: white;
+}
+
+.countdown-timer {
+  font-size: 18px;
+  color: #00ff00;
+}
+
+.user-icon-container {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  border: 2px solid #444;
+}
+
+.user-avatar:hover {
+  border-color: var(--navbar-link-hover);
+  background-color: var(--button-hover-bg);
+}
+
+/* Ensures proper spacing and prevents elements from overlapping */
+.search-nav-container > * {
+  margin: 0;
+}
+
+.select2-selection {
+  height: 40px; /* Align height with input fields */
+  display: flex;
+  align-items: center;
+  background-color: #222;
+  color: white;
+}
+
+/* General select2 container styling */
+.select2-container {
+  width: auto !important; /* Adjust the width dynamically */
+  background-color: #222; /* Match dark background */
+  border: 1px solid #444;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+}
+
+.select2-selection {
+  height: 40px; /* Match the height of other elements */
+  display: flex;
+  align-items: center;
+  background-color: #222; /* Dark background */
+  color: white; /* White text */
+  border: none; /* Remove extra borders */
+  border-radius: 5px;
+  padding: 0 10px;
+  outline: none;
+}
+
+.select2-selection__rendered {
+  color: white; /* Ensure white text */
+  font-size: 14px;
+}
+
+.select2-selection__clear {
+  color: #ccc; /* Slightly lighter for clarity icon */
+  font-size: 12px;
+}
+
+.select2-selection__arrow {
+  color: white; /* Match theme */
+}
+
+.select2-dropdown {
+  background-color: #222; /* Dropdown matches the dark theme */
+  border: 1px solid #444;
+  border-radius: 5px;
+  color: white;
+  width: 250px;
+}
+
+.select2-results__option {
+  background-color: #222; /* Match dropdown background */
+  color: white;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.select2-results__option--highlighted {
+  background-color: #444; /* Highlighted option */
+  color: #00ff00; /* Bright green for better contrast */
+}
+
+.select2-results__message {
+  color: #aaa; /* Match placeholder color */
+  font-size: 14px;
+}
+
+/* Remove scrollbar if unnecessary */
+.select2-dropdown .select2-results {
+  max-height: 300px; /* Limit height for better UX */
+  overflow-y: auto; /* Enable scroll only if needed */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: white;
+  line-height: 28px;
+}
+
+.select2-container--default .select2-selection--single {
+  border: none;
+}
+
+.select2-dropdown {
+  width: 250px !important;
+}
+
+
+/* Initially hide the contents on mobile */
+.search-nav-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.search-nav-container.mobile-menu-open {
+  display: block; /* Show the contents when mobile menu is open */
+}
+
+/* Media Queries for Mobile */
+@media (max-width: 820px) {
+  .hamburger {
+    display: block;
+    color: white;
+  }
+
+  .user-menu {
+    top: 345px;
+
+  }
+
+  .search-nav-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dashboard .navbar .nav-container .search-nav-container {
+    display: flex;
+  }
+
+  .search-nav-container.mobile-menu-open {
+    display: flex;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    padding: 15px;
+    z-index: 10;
+  }
+
+  .search-bar {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .select2-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .user-avatar {
+    display: block;
+  }
+}
+
+.user-avatar {
+  border: 2px solid transparent; /* Default no border */
+  border-radius: 50%;
+  transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.user-avatar:hover,
+.user-icon-container.active .user-avatar {
+  border-color: var(--navbar-link-hover); /* Border color on hover or when active */
+}
+
+/* Loader Wrapper */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1100; /* Ensure loaders are above all content */
+}
+
+/* Green Loader (Stocks) */
+.loader-green {
+  height: 4px;
+  background-color: #00ff00; /* Bright green */
+  width: 0;
+  transition: width 0.5s ease-in-out; /* Smooth transition for progress */
+}
+
+/* Red Loader (Sectors) */
+.loader-red {
+  height: 4px;
+  background-color: #ff0000; /* Bright red */
+  width: 0;
+  transition: width 0.5s ease-in-out; /* Smooth transition for progress */
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.user-avatar.clickable {
+  cursor: pointer;
+}
+
+.user-avatar {
+  cursor: not-allowed;
+}
+
+/* Google Button Styling */
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #fff; /* White button background */
+  color: #000; /* Black text for Google branding */
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-button:hover {
+  background-color: #e0e0e0; /* Slightly darker hover effect */
+}
+
+/* Google Icon */
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-controls button {
+  background-color: #ff5555;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.pagination-controls button:disabled {
+  background-color: #d6d6d6;
+  cursor: not-allowed;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #ff5555;
+}
+
+.pagination-controls span {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.shortcut-icons a {
+  color: #fff; /* White color for the icons */
+  display: inline-block; /* Aligns icons inline */
+  vertical-align: middle; /* Centers icons vertically relative to surrounding elements */
+}
+
+.shortcut-icons a:hover {
+  color: #4caf50; /* Light green color on hover for visual feedback */
+}
+
+/* Larger icon size */
+.shortcut-icons a svg {
+  width: 24px; /* Width of the icon */
+  height: 24px; /* Height of the icon */
+  margin-top: 2px;
+}

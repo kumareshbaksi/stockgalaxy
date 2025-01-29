@@ -1,0 +1,247 @@
+/* General Container */
+.portfolios-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+h1 {
+  text-align: center;
+  color: #00ff00;
+  margin-bottom: 20px;
+}
+
+/* Error Message */
+.error {
+  color: #ff5555;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Portfolio Input Section */
+.portfolio-input {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.portfolio-input input {
+  width: 300px;
+  padding: 10px;
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.portfolio-input input:focus {
+  border-color: #ff5555;
+}
+
+.portfolio-input button {
+  background-color: #ff5555;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.portfolio-input button:hover {
+  background-color: #8d3434;
+}
+
+/* Table Styling */
+.portfolios-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  table-layout: fixed; /* Ensures even column widths */
+}
+
+/* Header */
+.portfolios-table thead {
+  /* background-color: #103810; */
+  color: #fff;
+}
+
+/* Header and Cell Alignment */
+.portfolios-table th,
+.portfolios-table td {
+  padding: 12px;
+  text-align: center; /* Centers content in both th and td */
+  vertical-align: middle; /* Aligns content vertically */
+}
+
+/* Header Text */
+.portfolios-table th {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Input Fields in Table */
+.portfolios-table td input {
+  width: 90%; /* Allows some padding from edges */
+  padding: 6px;
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+}
+
+/* Action Links */
+.portfolios-table a {
+  color: #00ff00;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.portfolios-table a:hover {
+  color: #ff5555;
+}
+
+/* Buttons in Table */
+.portfolios-table button {
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+/* Popup Styling */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #303030;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 400px;
+}
+
+.popup-content h2 {
+  color: #ff5555;
+  margin-bottom: 15px;
+}
+
+.popup-content p {
+  margin-bottom: 20px;
+}
+
+/* Popup Buttons */
+.popup-content button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Delete Button */
+.popup-content button:first-of-type {
+  background-color: #ff5555;
+  color: #fff;
+}
+
+.popup-content button:first-of-type:hover {
+  background-color: #cc4444;
+}
+
+/* Cancel Button */
+.popup-content button:last-of-type {
+  background-color: #159b15;
+  color: #fff;
+}
+
+.popup-content button:last-of-type:hover {
+  background-color: #00cc00;
+}
+
+.general-footer {
+  background-color: black;
+    color: var(--navbar-link-color);
+    text-align: center;
+    font-size: 0.875rem;
+    display: flex
+;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Edit Button */
+.btn-edit {
+  background-color: #159b15; /* Green */
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background-color: #009700; /* Darker Green */
+  transform: scale(1.05);
+}
+
+/* View Button */
+.btn-view {
+  background-color: #007bff; /* Blue */
+  color: #fff;
+}
+
+.btn-view:hover {
+  background-color: #0056b3; /* Darker Blue */
+  transform: scale(1.05);
+}
+
+/* Delete Button */
+.btn-delete {
+  background-color: #ff5555; /* Red */
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background-color: #cc4444; /* Darker Red */
+  transform: scale(1.05);
+}
+
+/* Sticky Footer */
+.general-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+}
+
+.empty-message {
+  text-align: center !important;
+  color: #777;
+  font-size: 16px;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+.loading-message {
+  text-align: center;
+  color: #777;
+  font-size: 16px;
+  margin: 20px 0;
+  font-style: italic;
+}
