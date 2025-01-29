@@ -1,0 +1,130 @@
+
+/* Footer */
+.footer {
+  background-color: var(--footer-bg);
+  color: var(--navbar-link-color);
+  text-align: center;
+  padding: 5px;
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Footer links */
+.footer a {
+  color: var(--footer-link-color);
+  text-decoration: none;
+  margin: 0 5px;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--footer-link-hover);
+}
+
+/* Live Data Section */
+.footer-live-data {
+  margin-top: 5px;
+  font-size: 0.75rem;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-live-data p {
+  margin: 0;
+}
+
+.footer-live-data strong {
+  color: var(--footer-highlight-color); /* Add a highlight color variable for strong text */
+}
+
+.footer-live-data span {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.footer-live-data span.green {
+  color: #00c853; /* Green color for positive change */
+}
+
+.footer-live-data span.red {
+  color: #d50000; /* Red color for negative change */
+}
+
+/* Footer Popup */
+.footer-popup {
+  position: fixed;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  background: rgba(0, 0, 0, 0.8); /* Black transparent background */
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  color: white; /* Ensure content is readable on dark background */
+  box-sizing: border-box;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: white; /* Match text color for better visibility */
+  border: none;
+  font-size: 1.5rem; /* Larger font size for the "X" */
+  cursor: pointer;
+}
+
+.popup-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.popup-list li {
+  padding: 10px;
+  border-bottom: 1px solid #444; /* Subtle divider for dark background */
+  font-size: 0.9rem;
+}
+
+.popup-list li:last-child {
+  border-bottom: none;
+}
+
+.footer-more-button {
+  background: #ff5555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .footer-more-button {
+    padding: 1px !important;
+  }
+
+  .footer {
+    padding: 2px;
+  }
+} 

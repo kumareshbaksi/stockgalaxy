@@ -1,0 +1,15 @@
+.general-footer {
+  background-color: black;
+  color: var(--navbar-link-color);
+  text-align: center;
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+}
