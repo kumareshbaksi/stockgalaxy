@@ -31,6 +31,69 @@ If you encounter a bug or have a feature request, [send us an email](mailto:baks
 
 Refer to [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
+# Host Locally With Nginx
+
+Use the steps below (or see the detailed guide in [docs/nginx-virtual-host.md](./docs/nginx-virtual-host.md)) to serve the React build through your own Nginx instance while proxying the API to the Node backend.
+
+1. **Build the frontend**
+   ```bash
+   cd /var/www/stock-galaxy/frontend
+   npm install
+   npm run build
+   ```
+
+2. **Start the backend**  
+   Set the frontend origin and port so CORS stays in sync with Nginx:
+   ```bash
+   cd /var/www/stock-galaxy/backend
+   npm install
+   FRONTEND_URL=http://stockgalaxy.local \
+   PORT=5000 \
+   NODE_ENV=production \
+   node index.js
+   ```
+
+3. **Create the Nginx server block** (`/etc/nginx/sites-available/stockgalaxy.local.conf`)
+   ```nginx
+   server {
+       listen 80;
+       server_name stockgalaxy.local;
+
+       root /var/www/stock-galaxy/frontend/build;
+       index index.html;
+
+       location / {
+           try_files $uri /index.html;
+       }
+
+       location /api/ {
+           proxy_pass http://127.0.0.1:5000/api/;
+           proxy_http_version 1.1;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+
+       error_log /var/log/nginx/stockgalaxy.error.log;
+       access_log /var/log/nginx/stockgalaxy.access.log;
+   }
+   ```
+
+4. **Enable & reload**
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/stockgalaxy.local.conf /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+5. **Point the hostname to localhost**
+   ```bash
+   echo "127.0.0.1 stockgalaxy.local" | sudo tee -a /etc/hosts
+   ```
+
+6. **Optional:** Override the frontend’s API URL via `REACT_APP_API_BASE_URL` before running `npm run build` if the backend is hosted elsewhere.
+
 # Code of Conduct
 
 Before contributing to this repository, please read the [code of conduct](./docs/CODE_OF_CONDUCT.md).

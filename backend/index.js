@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config(); // Load .env variables first
 
 const express = require('express');
+const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
 const cookieParser = require("cookie-parser");
@@ -65,6 +66,15 @@ app.use("/api/auth", logoutRoute);
 
 const settingsRoutes = require('./routes/settingsRoutes');
 app.use('/api', settingsRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+    const root = path.join(__dirname, '..', 'frontend', 'build');
+    app.use(express.static(root));
+
+    app.get('*', (req, res) => {
+        res.sendFile('index.html', { root });
+    });
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
