@@ -9,7 +9,7 @@ const config = {
   API_BASE_URL:
     process.env.REACT_APP_API_BASE_URL ||
     (process.env.NODE_ENV === "production"
-      ? getWindowOrigin()
+      ? "https://stockgalaxy.in"
       : "http://localhost:5000"),
 };
 
