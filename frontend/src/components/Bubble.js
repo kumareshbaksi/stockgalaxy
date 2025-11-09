@@ -82,10 +82,14 @@ const BubbleChart = ({ data, highlightedStock }) => {
       `);
 
     // Define responsive size ranges
-    const screenArea = window.innerWidth * window.innerHeight;
-    const minSize = screenArea > 800000 ? 50 : screenArea > 400000 ? 30 : 40; 
-    const maxSize = screenArea > 800000 ? 150 : screenArea > 400000 ? 100 : 70;
-    const maxChange = Math.max(...data.map((d) => Math.abs(d.change))); 
+    const screenArea = width * height;
+    const bubbleCount = Math.max(data.length, 1);
+    const coverageFactor = 0.65; // Target ~65% of the canvas
+    const areaPerBubble = (screenArea * coverageFactor) / bubbleCount;
+    const baseRadius = Math.sqrt(areaPerBubble / Math.PI);
+    const minSize = Math.max(18, baseRadius * 0.8);
+    const maxSize = Math.min(220, Math.max(minSize + 10, baseRadius * 1.6));
+    const maxChange = Math.max(...data.map((d) => Math.abs(d.change)), 1);
 
     data.forEach((d) => {
       // Dynamically calculate size based on proportional mapping of 'change'

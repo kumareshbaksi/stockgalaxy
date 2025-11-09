@@ -1,0 +1,182 @@
+[
+  {
+    "symbol": "ASIANPAINT",
+    "name": "Asian Paints Ltd",
+    "sector": "Fast Moving Consumer Goods",
+    "website": "www.asianpaints.com"
+  },
+  {
+    "symbol": "INFY",
+    "name": "Infosys Ltd",
+    "sector": "Information Technology",
+    "website": "www.infosys.com"
+  },
+  {
+    "symbol": "WIPRO",
+    "name": "Wipro Ltd",
+    "sector": "Information Technology",
+    "website": "www.wipro.com"
+  },
+  {
+    "symbol": "JSWSTEEL",
+    "name": "JSW Steel Limited",
+    "sector": "Metal and Mining",
+    "website": "www.jsw.in"
+  },
+  {
+    "symbol": "TCS",
+    "name": "Tata Consultancy Services Ltd",
+    "sector": "Information Technology",
+    "website": "www.tcs.com"
+  },
+  {
+    "symbol": "TECHM",
+    "name": "Tech Mahindra Ltd",
+    "sector": "Information Technology",
+    "website": "www.techmahindra.com"
+  },
+  {
+    "symbol": "ADANIPORTS",
+    "name": "Adani Ports and Special Economic Zone Ld",
+    "sector": "Ports, Infrastructure",
+    "website": "www.adaniports.com"
+  },
+  {
+    "symbol": "NTPC",
+    "name": "NTPC Limited",
+    "sector": "Power",
+    "website": "www.ntpc.co.in"
+  },
+  {
+    "symbol": "BAJFINANCE",
+    "name": "Bajaj Finance Ltd.",
+    "sector": "Financial Services",
+    "website": "www.bajajfinserv.in"
+  },
+  {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank Ltd.",
+    "sector": "Banking",
+    "website": "www.hdfcbank.com"
+  },
+  {
+    "symbol": "MARUTI",
+    "name": "Maruti Suzuki India Ltd.",
+    "sector": "Automobile",
+    "website": "www.marutisuzuki.com"
+  },
+  {
+    "symbol": "M&M",
+    "name": "Mahindra & Mahindra Ltd.",
+    "sector": "Automobile",
+    "website": "www.mahindra.com"
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "name": "Kotak Mahindra Bank Ltd.",
+    "sector": "Banking",
+    "website": "www.kotak.com"
+  },
+  {
+    "symbol": "AXISBANK",
+    "name": "Axis Bank Ltd.",
+    "sector": "Banking",
+    "website": "www.axisbank.com"
+  },
+  {
+    "symbol": "NESTLEIND",
+    "name": "Nestle India Ltd.",
+    "sector": "FMCG (Personal Care, Health)",
+    "website": "www.nestle.in"
+  },
+  {
+    "symbol": "TATAMOTORS",
+    "name": "Tata Motors Ltd.",
+    "sector": "Automobile",
+    "website": "www.tatamotors.com"
+  },
+  {
+    "symbol": "POWERGRID",
+    "name": "Power Grid Corporation of India Ltd.",
+    "sector": "Power",
+    "website": "www.powergrid.in"
+  },
+  {
+    "symbol": "HCLTECH",
+    "name": "HCL Technologies Ltd.",
+    "sector": "Information Technology",
+    "website": "www.hcltech.com"
+  },
+  {
+    "symbol": "ULTRACEMCO",
+    "name": "UltraTech Cement Ltd.",
+    "sector": "Cement",
+    "website": "www.ultratechcement.com"
+  },
+  {
+    "symbol": "RELIANCE",
+    "name": "Reliance Industries Ltd.",
+    "sector": "Conglomerate",
+    "website": "www.relianceindustries.com"
+  },
+  {
+    "symbol": "BHARTIARTL",
+    "name": "Bharti Airtel Ltd.",
+    "sector": "Telecommunications",
+    "website": "www.bhartiartl.in"
+  },
+  {
+    "symbol": "ICICIBANK",
+    "name": "ICICI Bank Ltd.",
+    "sector": "Banking & Finance",
+    "website": "www.icicibank.com"
+  },
+  {
+    "symbol": "TATASTEEL",
+    "name": "Tata Steel Ltd.",
+    "sector": "Construction",
+    "website": "www.tatasteel.com"
+  },
+  {
+    "symbol": "HINDUNILVR",
+    "name": "Hindustan Unilever Ltd.",
+    "sector": "Logistics",
+    "website": "www.hul.co.in"
+  },
+  {
+    "symbol": "SBIN",
+    "name": "State Bank of India Ltd.",
+    "sector": "Banking",
+    "website": "www.sbi.co.in"
+  },
+  {
+    "symbol": "ITC",
+    "name": "ITC Ltd.",
+    "sector": "Conglomerate (Tobacco, FMCG)",
+    "website": "www.itcportal.com"
+  },
+  {
+    "symbol": "INDUSINDBK",
+    "name": "IndusInd Bank Ltd.",
+    "sector": "Banking",
+    "website": "www.indusind.com"
+  },
+  {
+    "symbol": "SUNPHARMA",
+    "name": "Sun Pharmaceutical Industries Limited",
+    "sector": "Pharmaceuticals",
+    "website": "www.sunpharma.com"
+  },
+  {
+    "symbol": "DRREDDY",
+    "name": "Dr. Reddy's Laboratories Limited",
+    "sector": "Pharmaceuticals",
+    "website": "www.drreddys.com"
+  },
+  {
+    "symbol": "TITAN",
+    "name": "Titan Company Ltd.",
+    "sector": "Lifestyle & Retail",
+    "website": "www.titancompany.in"
+  }
+]

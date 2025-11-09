@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Bubble from "../components/Bubble";
@@ -11,8 +11,6 @@ const BubbleChart = () => {
   const [selectedIndex, setSelectedIndex] = useState("NIFTY_50"); // Default stock index
   const [selectedExchange, setSelectedExchange] = useState("NSE"); // Default exchange
   const [stockData, setStockData] = useState([]); // Holds the bubble data
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(30); // Dynamically adjusted
   const [countdown, setCountdown] = useState(20); // Countdown timer for refresh
   const [loading, setLoading] = useState(false); // Track loading state
   const loadingBarRef = useRef(null);
@@ -33,28 +31,6 @@ const BubbleChart = () => {
     setHighlightedStock(matchingStocks.length > 0 ? matchingStocks : null);
   };  
   
-  const updateItemsPerPage = useCallback(() => {
-    const width = window.innerWidth;
-
-    if (width >= 1200) {
-      setItemsPerPage(25);
-    } else if (width >= 768) {
-      setItemsPerPage(20);
-    } else {
-      setItemsPerPage(15);
-    }
-  }, []);
-
-  useEffect(() => {
-    updateItemsPerPage();
-
-    window.addEventListener("resize", updateItemsPerPage);
-
-    return () => {
-      window.removeEventListener("resize", updateItemsPerPage);
-    };
-  }, [updateItemsPerPage]);
-
   const fetchStockData = useCallback(
     async (showProgress = false) => {
       try {
@@ -72,6 +48,8 @@ const BubbleChart = () => {
           endpoint = `/api/index/nifty50?suffix=${suffix}`;
         } else if (selectedIndex === "SENSEX") {
           endpoint = `/api/index/sensex?suffix=${suffix}`;
+        } else if (selectedIndex === "BANK_NIFTY") {
+          endpoint = `/api/index/banknifty?suffix=${suffix}`;
         } else {
           endpoint = `/api/sector/${selectedIndex}?suffix=${suffix}`;
         }
@@ -130,17 +108,6 @@ const BubbleChart = () => {
     };
   }, [fetchStockData]);
 
-  const paginatedData = useMemo(
-    () =>
-      stockData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      ),
-    [stockData, currentPage, itemsPerPage]
-  );
-
-  const totalPages = Math.ceil(stockData.length / itemsPerPage);
-
   return (
     <>
       <LoadingBar color="#00ff00" height={4} ref={loadingBarRef} />
@@ -149,14 +116,11 @@ const BubbleChart = () => {
         setSelectedIndex={setSelectedIndex}
         selectedExchange={selectedExchange}
         setSelectedExchange={setSelectedExchange}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
         countdownHome={countdown}
         onSearch={handleSearch}
       />
       <div className="bubble-chart-container">
-        <Bubble data={paginatedData} highlightedStock={highlightedStock} />
+        <Bubble data={stockData} highlightedStock={highlightedStock} />
       </div>
       <Footer />
     </>

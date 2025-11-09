@@ -679,19 +679,35 @@
   font-weight: bold;
 }
 
-.shortcut-icons a {
-  color: #fff; /* White color for the icons */
-  display: inline-block; /* Aligns icons inline */
-  vertical-align: middle; /* Centers icons vertically relative to surrounding elements */
+.shortcut-icons .portfolio-shortcut {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid #444;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.85rem;
 }
 
-.shortcut-icons a:hover {
-  color: #4caf50; /* Light green color on hover for visual feedback */
+.shortcut-icons .portfolio-shortcut:hover {
+  color: #4caf50;
+  border-color: #4caf50;
 }
 
-/* Larger icon size */
-.shortcut-icons a svg {
-  width: 24px; /* Width of the icon */
-  height: 24px; /* Height of the icon */
-  margin-top: 2px;
+.shortcut-icons .portfolio-shortcut svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .portfolio-shortcut {
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  .portfolio-shortcut span {
+    display: none;
+  }
 }

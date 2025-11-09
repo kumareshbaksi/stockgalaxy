@@ -3,34 +3,17 @@ const verifyToken = require("../middleware/verifyToken");
 const User = require("../models/User");
 const yahooFinance = require("yahoo-finance2").default;
 const fetchCompanyLogo = require("../utils/fetchCompanyLogo");
-const xlsx = require("xlsx");
-const path = require("path");
 const jwt = require("jsonwebtoken");
+const nseStocks = require("../data/nse-stocks.json");
 
 const router = express.Router();
 
-// Utility to read NSE.xlsx and map symbols to their domains.
-const getStockDomainsWithURL = (filePath) => {
-  try {
-    // Read the Excel file.
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-    // Create a mapping of SYMBOL to URL.
-    const stockDomains = {};
-    sheetData.forEach((row) => {
-      if (row.SYMBOL && row.URL) {
-        stockDomains[row.SYMBOL.trim()] = row.URL.trim();
-      }
-    });
-
-    return stockDomains;
-  } catch (error) {
-    console.error("Error reading NSE.xlsx file:", error.message);
-    throw error;
+const stockDomains = nseStocks.reduce((acc, stock) => {
+  if (stock.symbol && stock.website) {
+    acc[stock.symbol.trim()] = stock.website.trim();
   }
-};
+  return acc;
+}, {});
 
 router.post("/portfolio/create", verifyToken, async (req, res) => {
   const { name, stocks } = req.body;
@@ -149,11 +132,6 @@ router.get("/portfolio/stocks", verifyToken, async (req, res) => {
 
     // Adjust the number of stocks based on the plan
     const stocksToProcess = portfolio.stocks;
-
-    // Load stock domains from NSE.xlsx
-    const stockDomains = getStockDomainsWithURL(
-      path.join(__dirname, "../file/NSE.xlsx")
-    );
 
     // Enrich stock data
     const enrichedStocks = await Promise.all(

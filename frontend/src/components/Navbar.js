@@ -1,24 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import $ from "jquery";
 import "select2";
 import "select2/dist/css/select2.css";
 import UserProfile from "./UserProfile";
 import { UserContext } from "../Context/UserContext";
 import "../styles/Navbar.css";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import * as XLSX from "xlsx";
-import sectorsFile from "../assets/UniqueSectors.xlsx";
 import { FaChartBar } from "react-icons/fa"; // Import icons
 import apiService from "../services/apiService";
+const DEFAULT_INDEX_OPTIONS = [
+  { id: "NIFTY_50", text: "NIFTY 50" },
+  { id: "SENSEX", text: "SENSEX" },
+  { id: "BANK_NIFTY", text: "BANK NIFTY" },
+];
 
 const Navbar = ({
   setSelectedIndex,
   selectedExchange,
   setSelectedExchange,
-  currentPage,
-  totalPages,
-  setCurrentPage,
   countdownHome,
   countdownWatchlist,
   onSearch,
@@ -26,14 +25,12 @@ const Navbar = ({
   const { user } = useContext(UserContext); // Access user context
   const location = useLocation(); // Get current path
 
-  const [stockIndexes, setStockIndexes] = useState([
-    { id: "NIFTY_50", text: "NIFTY 50" },
-    { id: "SENSEX", text: "SENSEX" },
-  ]);
+  const [stockIndexes] = useState(DEFAULT_INDEX_OPTIONS);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false); // Profile popup state
   const [defaultPortfolioId, setDefaultPortfolioId] = useState('');
+  const [defaultPortfolioName, setDefaultPortfolioName] = useState('');
 
   // useEffect(() => {
   //   const fetchStockIndexes = async () => {
@@ -55,38 +52,6 @@ const Navbar = ({
 
   //   fetchStockIndexes();
   // }, []);
-
-  useEffect(() => {
-    const fetchStockIndexes = async () => {
-      try {
-        const response = await fetch(sectorsFile); // Use the imported file
-        if (!response.ok) {
-          throw new Error(`Failed to fetch file: ${response.statusText}`);
-        }
-        const arrayBuffer = await response.arrayBuffer();
-
-        // Read the workbook
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-
-        // Extract the first sheet
-        const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-        // Map and transform the sectors
-        const additionalSectors = sheetData.map((row) => ({
-          id: row.SECTOR.replace(/ /g, "_").replace(/\//g, "-"),
-          text: row.SECTOR,
-        }));
-
-        // Update state with stock indexes
-        setStockIndexes(additionalSectors);
-      } catch (error) {
-        console.error("Error fetching stock indexes from XLSX file:", error.message);
-      }
-    };
-
-    fetchStockIndexes();
-  }, []);
 
   // Initialize Select2 for the dropdown
   useEffect(() => {
@@ -171,41 +136,6 @@ const Navbar = ({
               <option value="BSE">BSE</option>
             </select>
           </div>
-          {totalPages > 1 && (
-            <div className="pagination-controls">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "8px",
-                  fontSize: "1.2rem", // Adjust the size of the arrow
-                }}
-              >
-                <FaArrowLeft />
-              </button>
-              <span>
-                {currentPage} of {totalPages}
-              </span>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "8px",
-                  fontSize: "1.2rem", // Adjust the size of the arrow
-                }}
-              >
-                <FaArrowRight />
-              </button>
-            </div>
-          )}
         </>
       );
     }
@@ -215,22 +145,35 @@ const Navbar = ({
 
   
   useEffect(() => {
-      if (user) {
-      const fetchSettings = async () => {
-        try {
-          const settings = await apiService.fetchData('/api/user/settings');
-          if (settings.defaultPortfolioId) {
-            console.log(settings.defaultPortfolioId)
-            setDefaultPortfolioId(settings.defaultPortfolioId);
-          }
-        } catch (error) {
-          console.error("Failed to fetch user settings:", error);
-        }
-      };
-      
-      fetchSettings();
+    if (!user) {
+      setDefaultPortfolioId('');
+      setDefaultPortfolioName('');
+      return;
     }
-    }, []);
+
+    const cachedId = localStorage.getItem('defaultPortfolioId');
+    const cachedName = localStorage.getItem('defaultPortfolioName');
+    if (cachedId) {
+      setDefaultPortfolioId(cachedId);
+      setDefaultPortfolioName(cachedName || 'My Watchlist');
+    }
+
+    const fetchSettings = async () => {
+      try {
+        const settings = await apiService.fetchData('/api/user/settings');
+        if (settings.defaultPortfolioId) {
+          setDefaultPortfolioId(settings.defaultPortfolioId);
+          setDefaultPortfolioName(settings.defaultPortfolioDetails?.name || 'My Watchlist');
+          localStorage.setItem('defaultPortfolioId', settings.defaultPortfolioId);
+          localStorage.setItem('defaultPortfolioName', settings.defaultPortfolioDetails?.name || 'My Watchlist');
+        }
+      } catch (error) {
+        console.error("Failed to fetch user settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, [user]);
     
   return (
     <nav className="navbar">
@@ -256,9 +199,14 @@ const Navbar = ({
           {renderContentBasedOnPage()}
           {user && defaultPortfolioId && (
             <div className="shortcut-icons">
-              <a href={`/watchlist?portfolioid=${defaultPortfolioId}`} title="Go to Default Portfolio">
+              <Link
+                to={`/watchlist?portfolioid=${defaultPortfolioId}`}
+                className="portfolio-shortcut"
+                title={`Open ${defaultPortfolioName || 'default portfolio'}`}
+              >
                 <FaChartBar />
-              </a>
+                <span>{defaultPortfolioName || 'My Watchlist'}</span>
+              </Link>
             </div>
           )}
           <div className="user-icon-container">

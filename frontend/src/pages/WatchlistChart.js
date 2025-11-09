@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import LoadingBar from "react-top-loading-bar";
 import Navbar from "../components/Navbar";
@@ -14,8 +14,6 @@ const WatchListChart = () => {
   const [portfolioId, setPortfolioId] = useState(null); // State to store the portfolio ID
   const [selectedExchange, setSelectedExchange] = useState("NSE");
   const [stockData, setStockData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [countdown, setCountdown] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
   const loadingBarRef = useRef(null);
@@ -62,25 +60,6 @@ const WatchListChart = () => {
 
     setHighlightedStock(matchingStocks.length > 0 ? matchingStocks : null);
   };
-
-  const updateItemsPerPage = useCallback(() => {
-    const width = window.innerWidth;
-    if (width >= 1200) {
-      setItemsPerPage(25);
-    } else if (width >= 768) {
-      setItemsPerPage(20);
-    } else {
-      setItemsPerPage(15);
-    }
-  }, []);
-
-  useEffect(() => {
-    updateItemsPerPage();
-    window.addEventListener("resize", updateItemsPerPage);
-    return () => {
-      window.removeEventListener("resize", updateItemsPerPage);
-    };
-  }, [updateItemsPerPage]);
 
   const fetchWatchlistData = useCallback(
     async (showProgress = false, suffix = "NS") => {
@@ -137,26 +116,12 @@ const WatchListChart = () => {
     };
   }, [fetchWatchlistData, selectedIndex, selectedExchange]);
 
-  const paginatedData = useMemo(
-    () =>
-      stockData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      ),
-    [stockData, currentPage, itemsPerPage]
-  );
-
-  const totalPages = Math.ceil(stockData.length / itemsPerPage);
-
   return (
     <>
       <LoadingBar color="#00ff00" height={4} ref={loadingBarRef} />
       <Navbar
         selectedExchange={selectedExchange}
         setSelectedExchange={setSelectedExchange}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
         countdownWatchlist={countdown}
         onSearch={handleSearch}
       />
@@ -168,7 +133,7 @@ const WatchListChart = () => {
             </p>
           </div>
         ) : stockData.length > 0 ? (
-          <Bubble data={paginatedData} highlightedStock={highlightedStock} />
+          <Bubble data={stockData} highlightedStock={highlightedStock} />
         ) : (
           <div className="no-stocks-message">
             <p>No stocks in your watchlist. Please add stocks to get started.</p>

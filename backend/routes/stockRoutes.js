@@ -1,20 +1,9 @@
 const express = require('express');
 const yahooFinance = require('yahoo-finance2').default;
 const verifyToken = require('../middleware/verifyToken');
-const fs = require('fs');
-const xlsx = require('xlsx');
-const csv = require('csv-parser');
+const { getStockList } = require('../utils/stockListService');
 
 const router = express.Router();
-
-// Function to read Excel files.
-const readExcel = (filePath) => {
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    return xlsx.utils.sheet_to_json(sheet);
-};
-
 // Helper function to calculate the start date based on the period
 const calculateStartDate = (period) => {
     const now = new Date();
@@ -83,26 +72,11 @@ router.get('/stock/history/:stockName', async (req, res) => {
 // API Endpoint to combine and filter unique stocks from NSE and BSE files.
 router.get('/stocks/all', verifyToken, async (req, res) => {
     try {
-        const nseFilePath = './file/NSE.xlsx';
-        const bseFilePath = './file/BSE.xlsx';
-
-        // Read data from NSE and BSE files.
-        const nseData = readExcel(nseFilePath);
-        const bseData = readExcel(bseFilePath);
-
-        // Combine data and ensure uniqueness by SYMBOL.
-        const combinedData = [...nseData, ...bseData];
-        const uniqueData = Array.from(
-            new Map(combinedData.map((item) => [item.SYMBOL, item])).values()
-        ).map((stock) => ({
-            symbol: stock.SYMBOL,
-            companyName: stock.NAME,
-        }));
-
-        res.status(200).json({ data: uniqueData });
+        const stocks = await getStockList();
+        res.status(200).json({ data: stocks });
     } catch (error) {
-        console.error('Error processing stocks:', error.message);
-        res.status(500).json({ message: 'Server Error' });
+        console.error('Error fetching dynamic stock list:', error.message);
+        res.status(500).json({ message: 'Failed to fetch stock list dynamically' });
     }
 });
 

@@ -11,8 +11,6 @@ import GeneralFooter from "../components/GeneralFooter";
 import "../styles/Dashboard.css";
 import { UserContext } from "../Context/UserContext";
 import apiService from "../services/apiService";
-import * as XLSX from "xlsx";
-import filePath from "../assets/UniqueStocks.xlsx";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
@@ -91,20 +89,14 @@ const Dashboard = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await fetch(filePath);
-      if (!response.ok) throw new Error(`Failed to fetch file: ${response.statusText}`);
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      const formattedData = sheetData.map((row) => ({
-        symbol: row.SYMBOL,
-        companyName: row.COMPANY_NAME,
-      }));
-      setStocks(formattedData);
-      return formattedData;
+      const response = await apiService.fetchData("/api/stocks/all");
+      if (!response?.data || !Array.isArray(response.data)) {
+        throw new Error("Unexpected response format for stock list");
+      }
+      setStocks(response.data);
+      return response.data;
     } catch (error) {
-      console.error("Error reading stocks from XLSX file:", error);
+      console.error("Error fetching stocks from API:", error);
       setStocks([]);
       return [];
     }

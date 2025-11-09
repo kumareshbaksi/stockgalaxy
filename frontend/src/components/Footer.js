@@ -122,7 +122,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           style={{ textDecoration: "none", color: "inherit" }}
         >
-          <FaCodeBranch /> v1.0.0
+          <FaCodeBranch /> v1.1.0
         </a>
       </p>
     </footer>

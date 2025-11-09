@@ -1,0 +1,14 @@
+[
+  { "symbol": "AUBANK", "name": "AU Small Finance Bank Ltd", "website": "https://www.aubank.in" },
+  { "symbol": "AXISBANK", "name": "Axis Bank Ltd", "website": "https://www.axisbank.com" },
+  { "symbol": "BANDHANBNK", "name": "Bandhan Bank Ltd", "website": "https://www.bandhanbank.com" },
+  { "symbol": "BANKBARODA", "name": "Bank of Baroda", "website": "https://www.bankofbaroda.in" },
+  { "symbol": "FEDERALBNK", "name": "Federal Bank Ltd", "website": "https://www.federalbank.co.in" },
+  { "symbol": "HDFCBANK", "name": "HDFC Bank Ltd", "website": "https://www.hdfcbank.com" },
+  { "symbol": "ICICIBANK", "name": "ICICI Bank Ltd", "website": "https://www.icicibank.com" },
+  { "symbol": "IDFCFIRSTB", "name": "IDFC FIRST Bank Ltd", "website": "https://www.idfcfirstbank.com" },
+  { "symbol": "INDUSINDBK", "name": "IndusInd Bank Ltd", "website": "https://www.indusind.com" },
+  { "symbol": "KOTAKBANK", "name": "Kotak Mahindra Bank Ltd", "website": "https://www.kotak.com" },
+  { "symbol": "PNB", "name": "Punjab National Bank", "website": "https://www.pnbindia.in" },
+  { "symbol": "SBIN", "name": "State Bank of India", "website": "https://sbi.co.in" }
+]
