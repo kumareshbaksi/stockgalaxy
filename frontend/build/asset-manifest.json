@@ -1,18 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.d237afe8.css",
-    "main.js": "/static/js/main.7048891c.js",
+    "main.css": "/static/css/main.3150fd3e.css",
+    "main.js": "/static/js/main.7f93a9d0.js",
     "blueprint-icons-all-paths-loader.js": "/static/js/blueprint-icons-all-paths-loader.00b21b0b.chunk.js",
     "blueprint-icons-split-paths-by-size-loader.js": "/static/js/blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js",
     "static/js/453.47452ef5.chunk.js": "/static/js/453.47452ef5.chunk.js",
     "blueprint-icons-all-paths.js": "/static/js/blueprint-icons-all-paths.7fd92a41.chunk.js",
     "blueprint-icons-16px-paths.js": "/static/js/blueprint-icons-16px-paths.111f02d0.chunk.js",
     "blueprint-icons-20px-paths.js": "/static/js/blueprint-icons-20px-paths.a40532bc.chunk.js",
-    "static/media/UniqueStocks.xlsx": "/static/media/UniqueStocks.22e32c14e2b72fa57550.xlsx",
-    "static/media/UniqueSectors.xlsx": "/static/media/UniqueSectors.543330bb22e302815d95.xlsx",
     "index.html": "/index.html",
-    "main.d237afe8.css.map": "/static/css/main.d237afe8.css.map",
-    "main.7048891c.js.map": "/static/js/main.7048891c.js.map",
+    "main.3150fd3e.css.map": "/static/css/main.3150fd3e.css.map",
+    "main.7f93a9d0.js.map": "/static/js/main.7f93a9d0.js.map",
     "blueprint-icons-all-paths-loader.00b21b0b.chunk.js.map": "/static/js/blueprint-icons-all-paths-loader.00b21b0b.chunk.js.map",
     "blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js.map": "/static/js/blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js.map",
     "453.47452ef5.chunk.js.map": "/static/js/453.47452ef5.chunk.js.map",
@@ -21,7 +19,7 @@
     "blueprint-icons-20px-paths.a40532bc.chunk.js.map": "/static/js/blueprint-icons-20px-paths.a40532bc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d237afe8.css",
-    "static/js/main.7048891c.js"
+    "static/css/main.3150fd3e.css",
+    "static/js/main.7f93a9d0.js"
   ]
 }
