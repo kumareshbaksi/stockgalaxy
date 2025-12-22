@@ -1,18 +1,24 @@
-const axios = require('axios');
-
-// Utility to fetch company logo using Clearbit Logo API
+// Utility to return a Clearbit logo URL for a company domain.
 const fetchCompanyLogo = async (domain) => {
-  try {
-    const sanitizedDomain = domain.trim().replace(/\/+$/, ''); // Clearbit rejects trailing slashes
-    const logoUrl = `https://logo.clearbit.com/${sanitizedDomain}`;
-    const response = await axios.get(logoUrl, { responseType: 'arraybuffer' });
-    if (response.status === 200) {
-      // Return logo URL if reachable.
-      return logoUrl;
-    }
+  if (!domain || typeof domain !== 'string') {
     return null;
+  }
+
+  const trimmed = domain.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(candidate);
+    if (!parsed.hostname) {
+      return null;
+    }
+    // Return URL without server-side validation; client will fetch it.
+    return `https://logo.clearbit.com/${parsed.hostname}`;
   } catch (error) {
-    // Return null if logo is not found.
     return null;
   }
 };
