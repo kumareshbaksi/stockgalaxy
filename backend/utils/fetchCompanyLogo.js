@@ -1,4 +1,4 @@
-// Utility to return a Clearbit logo URL for a company domain.
+// Utility to return a Google S2 favicon URL for a company domain.
 const fetchCompanyLogo = async (domain) => {
   if (!domain || typeof domain !== 'string') {
     return null;
@@ -16,8 +16,10 @@ const fetchCompanyLogo = async (domain) => {
     if (!parsed.hostname) {
       return null;
     }
-    // Return URL without server-side validation; client will fetch it.
-    return `https://logo.clearbit.com/${parsed.hostname}`;
+    const hostname = parsed.hostname;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+      hostname
+    )}&sz=128`;
   } catch (error) {
     return null;
   }
