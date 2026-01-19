@@ -18,8 +18,6 @@ const Navbar = ({
   setSelectedIndex,
   selectedExchange,
   setSelectedExchange,
-  countdownHome,
-  countdownWatchlist,
   onSearch,
 }) => {
   const { user } = useContext(UserContext); // Access user context
@@ -92,7 +90,6 @@ const Navbar = ({
     if (location.pathname === "/watchlist") {
       return (
         <>
-          <div className="countdown-timer">{countdownWatchlist}s</div>
           <input
             type="text"
             className="search-bar"
@@ -117,7 +114,6 @@ const Navbar = ({
     if (location.pathname === "/") {
       return (
         <>
-          <div className="countdown-timer">{countdownHome}s</div>
           <input
             type="text"
             className="search-bar"

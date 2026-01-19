@@ -11,11 +11,10 @@ const BubbleChart = () => {
   const [selectedIndex, setSelectedIndex] = useState("NIFTY_50"); // Default stock index
   const [selectedExchange, setSelectedExchange] = useState("NSE"); // Default exchange
   const [stockData, setStockData] = useState([]); // Holds the bubble data
-  const [countdown, setCountdown] = useState(20); // Countdown timer for refresh
   const [loading, setLoading] = useState(false); // Track loading state
   const loadingBarRef = useRef(null);
   const [highlightedStock, setHighlightedStock] = useState(null);
-  const countdownRef = useRef(null); // Ref for countdown interval
+  const refreshIntervalRef = useRef(null);
 
   const handleSearch = (query) => {
     if (!query.trim()) {
@@ -76,34 +75,22 @@ const BubbleChart = () => {
             loadingBarRef.current.complete();
           }
         }
-        startCountdown(); // Start countdown when data is loaded
       }
     },
     [selectedIndex, selectedExchange]
   );
 
-  const startCountdown = () => {
-    if (countdownRef.current) {
-      clearInterval(countdownRef.current); // Clear any existing intervals
-    }
-
-    setCountdown(20); // Reset the countdown timer
-    countdownRef.current = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev === 1) {
-          fetchStockData(true); // Fetch new data when countdown ends
-          return 20; // Reset countdown
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
   useEffect(() => {
     fetchStockData(true);
+    if (refreshIntervalRef.current) {
+      clearInterval(refreshIntervalRef.current);
+    }
+    refreshIntervalRef.current = setInterval(() => {
+      fetchStockData(true);
+    }, 20000);
     return () => {
-      if (countdownRef.current) {
-        clearInterval(countdownRef.current); // Cleanup interval on unmount
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
       }
     };
   }, [fetchStockData]);
@@ -116,7 +103,6 @@ const BubbleChart = () => {
         setSelectedIndex={setSelectedIndex}
         selectedExchange={selectedExchange}
         setSelectedExchange={setSelectedExchange}
-        countdownHome={countdown}
         onSearch={handleSearch}
       />
       <div className="bubble-chart-container">

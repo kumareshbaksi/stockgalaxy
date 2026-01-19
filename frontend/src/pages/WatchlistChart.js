@@ -14,11 +14,9 @@ const WatchListChart = () => {
   const [portfolioId, setPortfolioId] = useState(null); // State to store the portfolio ID
   const [selectedExchange, setSelectedExchange] = useState("NSE");
   const [stockData, setStockData] = useState([]);
-  const [countdown, setCountdown] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
   const loadingBarRef = useRef(null);
   const [highlightedStock, setHighlightedStock] = useState(null);
-  const countdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -109,11 +107,6 @@ const WatchListChart = () => {
           setIsLoading(false);
         });
     }
-    return () => {
-      if (countdownRef.current) {
-        clearInterval(countdownRef.current);
-      }
-    };
   }, [fetchWatchlistData, selectedIndex, selectedExchange]);
 
   return (
@@ -122,7 +115,6 @@ const WatchListChart = () => {
       <Navbar
         selectedExchange={selectedExchange}
         setSelectedExchange={setSelectedExchange}
-        countdownWatchlist={countdown}
         onSearch={handleSearch}
       />
       <div className="bubble-chart-container">

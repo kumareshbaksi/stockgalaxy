@@ -2,8 +2,7 @@ const express = require('express');
 const yahooFinance = require('yahoo-finance2').default;
 const fetchCompanyLogo = require('../utils/fetchCompanyLogo');
 const { getIndexConstituents } = require('../utils/indexService');
-const { isIndianMarketOpen } = require('../utils/marketHours');
-const { canAttemptClosedFetch, markClosedFetchAttempt } = require('../utils/closedFetchGuard');
+const { shouldForceRefresh } = require('../utils/cacheRefreshAuth');
 const nseStocks = require('../data/nse-stocks.json');
 const bseStocks = require('../data/bse-stocks.json');
 
@@ -11,9 +10,9 @@ const router = express.Router();
 
 const QUOTE_CACHE_TTL_MS =
   Number.parseInt(
-    process.env.INDEX_QUOTE_CACHE_TTL_MS || process.env.QUOTE_CACHE_TTL_MS || '20000',
+    process.env.INDEX_QUOTE_CACHE_TTL_MS || process.env.QUOTE_CACHE_TTL_MS || '3600000',
     10
-  ) || 20000;
+  ) || 3600000;
 const QUOTE_BATCH_SIZE = Number.parseInt(process.env.QUOTE_BATCH_SIZE || '50', 10) || 50;
 const quoteResponseCache = new Map();
 
@@ -109,17 +108,10 @@ router.get('/index/:index', async (req, res) => {
 
   const normalizedIndex = index.replace(/[^a-z0-9_]/gi, '').toLowerCase();
   const cacheKey = buildCacheKey('index', normalizedIndex, suffix);
-  const marketOpen = isIndianMarketOpen();
-  const cached = marketOpen ? getCachedResponse(cacheKey) : getStaleResponse(cacheKey);
-  if (cached) {
+  const forceRefresh = shouldForceRefresh(req);
+  const cached = getCachedResponse(cacheKey);
+  if (cached && !forceRefresh) {
     return res.status(200).json(cached);
-  }
-  if (!marketOpen) {
-    const guardKey = `index:${cacheKey}`;
-    if (!canAttemptClosedFetch(guardKey)) {
-      return res.status(503).json({ message: 'Market closed. Cached data not available yet.' });
-    }
-    markClosedFetchAttempt(guardKey);
   }
 
   try {
@@ -195,9 +187,9 @@ router.get('/sector/:sector', async (req, res) => {
     const formattedSector = formatSectorName(sector);
     const normalizedSector = formattedSector.trim().toLowerCase();
     const cacheKey = buildCacheKey('sector', normalizedSector, suffix);
-    const marketOpen = isIndianMarketOpen();
-    const cached = marketOpen ? getCachedResponse(cacheKey) : getStaleResponse(cacheKey);
-    if (cached) {
+    const forceRefresh = shouldForceRefresh(req);
+    const cached = getCachedResponse(cacheKey);
+    if (cached && !forceRefresh) {
       return res.status(200).json(cached);
     }
 
@@ -205,14 +197,6 @@ router.get('/sector/:sector', async (req, res) => {
 
     if (!sectorStocks.length) {
       return res.status(404).json({ message: `No stocks found for sector ${formattedSector}` });
-    }
-
-    if (!marketOpen) {
-      const guardKey = `sector:${cacheKey}`;
-      if (!canAttemptClosedFetch(guardKey)) {
-        return res.status(503).json({ message: 'Market closed. Cached data not available yet.' });
-      }
-      markClosedFetchAttempt(guardKey);
     }
 
     const symbols = sectorStocks

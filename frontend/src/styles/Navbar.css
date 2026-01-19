@@ -146,13 +146,6 @@
   outline: none;
 }
 
-.countdown-timer {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #00ff00;
-  margin-left: 10px;
-}
-
 .search-bar {
   background-color: var(--button-bg); /* Use theme variable for background */
   color: var(--button-color); /* Use theme variable for text color */
@@ -379,11 +372,6 @@
 .dropdown-select option {
   background-color: #222;
   color: white;
-}
-
-.countdown-timer {
-  font-size: 18px;
-  color: #00ff00;
 }
 
 .user-icon-container {
