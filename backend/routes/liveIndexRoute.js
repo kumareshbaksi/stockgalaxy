@@ -1,6 +1,7 @@
 const express = require("express");
 const yahooFinance = require("yahoo-finance2").default;
 const { isIndianMarketOpen } = require("../utils/marketHours");
+const { canAttemptClosedFetch, markClosedFetchAttempt } = require("../utils/closedFetchGuard");
 
 const router = express.Router();
 
@@ -54,7 +55,11 @@ router.get("/live-index/:indexName", async (req, res) => {
     return res.json(cached);
   }
   if (!marketOpen) {
-    return res.status(503).json({ error: "Market closed. Cached data not available." });
+    const guardKey = `live-index:${cacheKey}`;
+    if (!canAttemptClosedFetch(guardKey)) {
+      return res.status(503).json({ error: "Market closed. Cached data not available yet." });
+    }
+    markClosedFetchAttempt(guardKey);
   }
 
   try {

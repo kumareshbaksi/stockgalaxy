@@ -3,6 +3,7 @@ const yahooFinance = require('yahoo-finance2').default;
 const fetchCompanyLogo = require('../utils/fetchCompanyLogo');
 const { getIndexConstituents } = require('../utils/indexService');
 const { isIndianMarketOpen } = require('../utils/marketHours');
+const { canAttemptClosedFetch, markClosedFetchAttempt } = require('../utils/closedFetchGuard');
 const nseStocks = require('../data/nse-stocks.json');
 const bseStocks = require('../data/bse-stocks.json');
 
@@ -114,7 +115,11 @@ router.get('/index/:index', async (req, res) => {
     return res.status(200).json(cached);
   }
   if (!marketOpen) {
-    return res.status(503).json({ message: 'Market closed. Cached data not available.' });
+    const guardKey = `index:${cacheKey}`;
+    if (!canAttemptClosedFetch(guardKey)) {
+      return res.status(503).json({ message: 'Market closed. Cached data not available yet.' });
+    }
+    markClosedFetchAttempt(guardKey);
   }
 
   try {
@@ -203,7 +208,11 @@ router.get('/sector/:sector', async (req, res) => {
     }
 
     if (!marketOpen) {
-      return res.status(503).json({ message: 'Market closed. Cached data not available.' });
+      const guardKey = `sector:${cacheKey}`;
+      if (!canAttemptClosedFetch(guardKey)) {
+        return res.status(503).json({ message: 'Market closed. Cached data not available yet.' });
+      }
+      markClosedFetchAttempt(guardKey);
     }
 
     const symbols = sectorStocks
