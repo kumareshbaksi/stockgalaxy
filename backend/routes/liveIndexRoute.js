@@ -51,7 +51,11 @@ router.get("/live-index/:indexName", async (req, res) => {
   const cacheKey = indexKey;
   const forceRefresh = shouldForceRefresh(req);
   const cached = getCachedIndex(cacheKey);
-  if (cached && !forceRefresh) {
+  if (
+    cached &&
+    !forceRefresh &&
+    !(indexKey === "sensex" && (!cached.price || cached.price === 0))
+  ) {
     return res.json(cached);
   }
 
@@ -59,7 +63,7 @@ router.get("/live-index/:indexName", async (req, res) => {
     if (forceRefresh) {
       await refreshMarketData({ reason: "force" });
     }
-    await ensureMarketData({ requireIndices: true });
+    await ensureMarketData({ requireIndices: true, indexKey });
   } catch (error) {
     console.error(`Error refreshing index data for ${indexName}:`, error.message);
   }

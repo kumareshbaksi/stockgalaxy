@@ -483,8 +483,7 @@ const fetchSensexSnapshot = async () => {
     try {
       const headers = {
         'User-Agent': NSE_HEADERS['User-Agent'],
-        'Referer': 'https://www.bseindia.com',
-        'Origin': 'https://www.bseindia.com',
+        'Referer': 'https://www.bseindia.com/',
         'Accept': 'application/json,text/plain,*/*',
       };
       let payload = null;
@@ -603,11 +602,16 @@ const getMarketBucket = (suffix) => (suffix === 'BO' ? cache.bse : cache.nse);
 
 const hasQuotes = (bucket) => Object.keys(bucket?.quotes || {}).length > 0;
 
-const hasIndices = () => Object.keys(cache.indices || {}).length > 0;
+const hasIndices = (key) => {
+  if (key) {
+    return Boolean(cache.indices && cache.indices[key]);
+  }
+  return Object.keys(cache.indices || {}).length > 0;
+};
 
-const ensureMarketData = async ({ suffix, requireIndices = false } = {}) => {
+const ensureMarketData = async ({ suffix, requireIndices = false, indexKey } = {}) => {
   const bucketReady = suffix ? hasQuotes(getMarketBucket(suffix)) : hasQuotes(cache.nse) || hasQuotes(cache.bse);
-  const indexReady = !requireIndices || hasIndices();
+  const indexReady = !requireIndices || hasIndices(indexKey);
   if (bucketReady && indexReady) {
     return;
   }
