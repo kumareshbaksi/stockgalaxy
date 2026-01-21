@@ -42,12 +42,6 @@ const Footer = () => {
 
   useEffect(() => {
     fetchLiveData();
-
-    const interval = setInterval(() => {
-      fetchLiveData();
-    }, 20000);
-
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
