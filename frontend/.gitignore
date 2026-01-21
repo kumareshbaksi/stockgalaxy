@@ -20,3 +20,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# accidental API dump files
+frontend/time_series*
+*time_series?*
