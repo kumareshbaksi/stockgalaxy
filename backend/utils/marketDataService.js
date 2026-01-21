@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const fsSync = require('fs');
 const axios = require('axios');
+const https = require('https');
 const csv = require('csv-parser');
 const { Readable } = require('stream');
 const cron = require('node-cron');
@@ -37,6 +38,7 @@ const NSE_INDICES_URL =
 
 const SENSEX_INDEX_URLS = [
   process.env.SENSEX_INDEX_URL,
+  'https://api.bseindia.com/RealTimeBseIndiaAPI/api/GetSensexData/w',
   'https://api.bseindia.com/BseIndiaAPI/api/IndexSensexData/w',
   'https://api.bseindia.com/BseIndiaAPI/api/GetSensexData/w',
   'https://www.bseindia.com/BseIndiaAPI/api/IndexSensexData/w',
@@ -416,6 +418,8 @@ const parseSensexRow = (row) => {
   if (!row) return null;
   const price =
     parseNumber(
+      row.ltp ||
+        row.LTP ||
       row.last ||
         row.Last ||
         row.indexValue ||
@@ -425,14 +429,28 @@ const parseSensexRow = (row) => {
         row.value
     ) || null;
   let change =
-    parseNumber(row.variation || row.change || row.netChange || row.Change || row.chg) || null;
+    parseNumber(
+      row.chg ||
+        row.Change ||
+        row.variation ||
+        row.change ||
+        row.netChange ||
+        row.Change ||
+        row.chg
+    ) || null;
   let changePercent =
-    parseNumber(row.percentChange || row.changePercent || row.pChange || row['change%']) || null;
-  if ((change === null || changePercent === null) && row.prevClose) {
-    const prevClose = parseNumber(row.prevClose);
-    if (prevClose && price !== null) {
-      change = price - prevClose;
-      changePercent = (change / prevClose) * 100;
+    parseNumber(
+      row.perchg ||
+        row.percentChange ||
+        row.changePercent ||
+        row.pChange ||
+        row['change%']
+    ) || null;
+  const prevCloseValue = parseNumber(row.Prev_Close || row.prevClose);
+  if ((change === null || changePercent === null) && prevCloseValue) {
+    if (price !== null) {
+      change = price - prevCloseValue;
+      changePercent = (change / prevCloseValue) * 100;
     }
   }
   if (price === null) return null;
@@ -463,15 +481,36 @@ const extractSensexPayload = (payload) => {
 const fetchSensexSnapshot = async () => {
   for (const url of SENSEX_INDEX_URLS) {
     try {
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': NSE_HEADERS['User-Agent'],
-          'Referer': 'https://www.bseindia.com',
-          'Accept': 'application/json,text/plain,*/*',
-        },
-        timeout: 15000,
-      });
-      const row = extractSensexPayload(response.data);
+      const headers = {
+        'User-Agent': NSE_HEADERS['User-Agent'],
+        'Referer': 'https://www.bseindia.com',
+        'Origin': 'https://www.bseindia.com',
+        'Accept': 'application/json,text/plain,*/*',
+      };
+      let payload = null;
+      if (url.includes('RealTimeBseIndiaAPI')) {
+        payload = await new Promise((resolve, reject) => {
+          https
+            .get(url, { headers, insecureHTTPParser: true }, (res) => {
+              let body = '';
+              res.on('data', (chunk) => {
+                body += chunk;
+              });
+              res.on('end', () => {
+                try {
+                  resolve(JSON.parse(body));
+                } catch (error) {
+                  reject(error);
+                }
+              });
+            })
+            .on('error', reject);
+        });
+      } else {
+        const response = await axios.get(url, { headers, timeout: 15000 });
+        payload = response.data;
+      }
+      const row = extractSensexPayload(payload);
       const parsed = parseSensexRow(row);
       if (parsed) return parsed;
     } catch (error) {

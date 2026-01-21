@@ -1,19 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import PopupGraph from "./PopupGraph";
 
 const BubbleChart = ({ data, highlightedStock }) => {
   const svgRef = useRef();
-  // Track the clicked bubble.
-  const [selectedBubble, setSelectedBubble] = useState(null);
-  // Ref to track bubble position.
-  const selectedBubbleRef = useRef(null);
-
-  useEffect(() => {
-    if (selectedBubbleRef.current) {
-      setSelectedBubble(selectedBubbleRef.current);
-    }
-  }, [selectedBubbleRef.current]);
 
   useEffect(() => {
     const width = window.innerWidth;
@@ -142,15 +131,7 @@ const BubbleChart = ({ data, highlightedStock }) => {
           .on("start", dragStarted)
           .on("drag", dragged)
           .on("end", dragEnded)
-      )
-      .on("click", (event, d) => {
-        setSelectedBubble({
-          x: d.x,
-          y: d.y,
-          data: d,
-        });
-        selectedBubbleRef.current = { x: d.x, y: d.y, data: d };
-      });
+      );
 
     // Draw bubbles inside the group.
     groups
@@ -213,18 +194,6 @@ const BubbleChart = ({ data, highlightedStock }) => {
     function ticked() {
       groups.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
 
-      if (selectedBubbleRef.current) {
-        const selected = data.find(
-          (d) => d.name === selectedBubbleRef.current.data.name
-        );
-        if (selected) {
-          selectedBubbleRef.current = {
-            ...selectedBubbleRef.current,
-            x: selected.x,
-            y: selected.y,
-          };
-        }
-      }
     }
 
     // Drag event handlers
@@ -289,18 +258,6 @@ const BubbleChart = ({ data, highlightedStock }) => {
   return (
     <>
       <svg ref={svgRef}></svg>
-      {selectedBubble && (
-        <PopupGraph
-          stockName={selectedBubble?.data?.name}
-          suffix={selectedBubble?.data?.suffix}
-          onClose={() => {
-            setSelectedBubble(null);
-            selectedBubbleRef.current = null; // Reset the reference
-          }}
-          x={selectedBubble?.x}
-          y={selectedBubble?.y}
-        />
-      )}
     </>
   );
 };

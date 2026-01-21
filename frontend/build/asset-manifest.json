@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/static/css/main.4e02966e.css",
-    "main.js": "/static/js/main.8561d7c7.js",
-    "blueprint-icons-all-paths-loader.js": "/static/js/blueprint-icons-all-paths-loader.00b21b0b.chunk.js",
-    "blueprint-icons-split-paths-by-size-loader.js": "/static/js/blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js",
-    "static/js/453.47452ef5.chunk.js": "/static/js/453.47452ef5.chunk.js",
-    "blueprint-icons-all-paths.js": "/static/js/blueprint-icons-all-paths.7fd92a41.chunk.js",
-    "blueprint-icons-16px-paths.js": "/static/js/blueprint-icons-16px-paths.111f02d0.chunk.js",
-    "blueprint-icons-20px-paths.js": "/static/js/blueprint-icons-20px-paths.a40532bc.chunk.js",
+    "main.js": "/static/js/main.87b86625.js",
+    "blueprint-icons-all-paths-loader.js": "/static/js/blueprint-icons-all-paths-loader.f2e7e952.chunk.js",
+    "blueprint-icons-split-paths-by-size-loader.js": "/static/js/blueprint-icons-split-paths-by-size-loader.881dd85a.chunk.js",
+    "static/js/453.2ccc9f7f.chunk.js": "/static/js/453.2ccc9f7f.chunk.js",
+    "blueprint-icons-all-paths.js": "/static/js/blueprint-icons-all-paths.06c93665.chunk.js",
+    "blueprint-icons-16px-paths.js": "/static/js/blueprint-icons-16px-paths.87f302ff.chunk.js",
+    "blueprint-icons-20px-paths.js": "/static/js/blueprint-icons-20px-paths.a2e83447.chunk.js",
     "index.html": "/index.html",
     "main.4e02966e.css.map": "/static/css/main.4e02966e.css.map",
-    "main.8561d7c7.js.map": "/static/js/main.8561d7c7.js.map",
-    "blueprint-icons-all-paths-loader.00b21b0b.chunk.js.map": "/static/js/blueprint-icons-all-paths-loader.00b21b0b.chunk.js.map",
-    "blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js.map": "/static/js/blueprint-icons-split-paths-by-size-loader.6d8ec1de.chunk.js.map",
-    "453.47452ef5.chunk.js.map": "/static/js/453.47452ef5.chunk.js.map",
-    "blueprint-icons-all-paths.7fd92a41.chunk.js.map": "/static/js/blueprint-icons-all-paths.7fd92a41.chunk.js.map",
-    "blueprint-icons-16px-paths.111f02d0.chunk.js.map": "/static/js/blueprint-icons-16px-paths.111f02d0.chunk.js.map",
-    "blueprint-icons-20px-paths.a40532bc.chunk.js.map": "/static/js/blueprint-icons-20px-paths.a40532bc.chunk.js.map"
+    "main.87b86625.js.map": "/static/js/main.87b86625.js.map",
+    "blueprint-icons-all-paths-loader.f2e7e952.chunk.js.map": "/static/js/blueprint-icons-all-paths-loader.f2e7e952.chunk.js.map",
+    "blueprint-icons-split-paths-by-size-loader.881dd85a.chunk.js.map": "/static/js/blueprint-icons-split-paths-by-size-loader.881dd85a.chunk.js.map",
+    "453.2ccc9f7f.chunk.js.map": "/static/js/453.2ccc9f7f.chunk.js.map",
+    "blueprint-icons-all-paths.06c93665.chunk.js.map": "/static/js/blueprint-icons-all-paths.06c93665.chunk.js.map",
+    "blueprint-icons-16px-paths.87f302ff.chunk.js.map": "/static/js/blueprint-icons-16px-paths.87f302ff.chunk.js.map",
+    "blueprint-icons-20px-paths.a2e83447.chunk.js.map": "/static/js/blueprint-icons-20px-paths.a2e83447.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4e02966e.css",
-    "static/js/main.8561d7c7.js"
+    "static/js/main.87b86625.js"
   ]
 }

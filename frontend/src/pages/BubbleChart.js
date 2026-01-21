@@ -14,7 +14,6 @@ const BubbleChart = () => {
   const [loading, setLoading] = useState(false); // Track loading state
   const loadingBarRef = useRef(null);
   const [highlightedStock, setHighlightedStock] = useState(null);
-  const refreshIntervalRef = useRef(null);
 
   const handleSearch = (query) => {
     if (!query.trim()) {
@@ -82,17 +81,6 @@ const BubbleChart = () => {
 
   useEffect(() => {
     fetchStockData(true);
-    if (refreshIntervalRef.current) {
-      clearInterval(refreshIntervalRef.current);
-    }
-    refreshIntervalRef.current = setInterval(() => {
-      fetchStockData(true);
-    }, 20000);
-    return () => {
-      if (refreshIntervalRef.current) {
-        clearInterval(refreshIntervalRef.current);
-      }
-    };
   }, [fetchStockData]);
 
   return (
