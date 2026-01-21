@@ -123,13 +123,57 @@ const getDateInTimeZone = (date, timeZone) => {
   return new Date(Date.UTC(year, month - 1, day));
 };
 
-const resolveBaseDate = () => {
+const MONTHS = {
+  JAN: 0,
+  FEB: 1,
+  MAR: 2,
+  APR: 3,
+  MAY: 4,
+  JUN: 5,
+  JUL: 6,
+  AUG: 7,
+  SEP: 8,
+  OCT: 9,
+  NOV: 10,
+  DEC: 11,
+};
+
+const parseNseTimestamp = (value) => {
+  if (!value || typeof value !== 'string') return null;
+  const match = value.match(/(\d{1,2})-([A-Za-z]{3})-(\d{4})/);
+  if (!match) return null;
+  const day = Number.parseInt(match[1], 10);
+  const month = MONTHS[match[2].toUpperCase()];
+  const year = Number.parseInt(match[3], 10);
+  if (!Number.isFinite(day) || month === undefined || !Number.isFinite(year)) {
+    return null;
+  }
+  return new Date(Date.UTC(year, month, day));
+};
+
+const fetchNseBaseDate = async () => {
+  const response = await axios.get(NSE_INDICES_URL, {
+    headers: NSE_HEADERS,
+    timeout: 15000,
+  });
+  return parseNseTimestamp(response.data?.timestamp || response.data?.time || '');
+};
+
+const resolveBaseDate = async () => {
   const override = process.env.MARKET_DATA_BASE_DATE;
   if (override) {
     const parsed = new Date(`${override}T00:00:00Z`);
     if (!Number.isNaN(parsed.getTime())) {
       return parsed;
     }
+  }
+  try {
+    const remoteDate = await fetchNseBaseDate();
+    if (remoteDate) {
+      return remoteDate;
+    }
+  } catch (error) {
+    console.error('Failed to resolve NSE base date:', error.message);
   }
   return getDateInTimeZone(new Date(), MARKET_DATA_TIMEZONE);
 };
@@ -478,7 +522,7 @@ const refreshIndexData = async () => {
 
 const refreshMarketData = async (options = {}) => {
   if (refreshPromise) return refreshPromise;
-  const baseDate = resolveBaseDate();
+  const baseDate = await resolveBaseDate();
   refreshPromise = (async () => {
     const tasks = [
       refreshNseData(baseDate),
