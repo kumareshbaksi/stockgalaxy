@@ -1,7 +1,7 @@
 const express = require('express');
-const yahooFinance = require('yahoo-finance2').default;
 const verifyToken = require('../middleware/verifyToken');
 const { getStockList } = require('../utils/stockListService');
+const { getHistory } = require('../utils/marketDataService');
 
 const router = express.Router();
 // Helper function to calculate the start date based on the period
@@ -26,22 +26,19 @@ const calculateStartDate = (period) => {
 router.get('/stock/history/:stockName', async (req, res) => {
     const { stockName } = req.params;
     // Default suffix to NSE.
-    const { period = '1y', interval, suffix = 'NS' } = req.query;
+    const { period = '1y', suffix = 'NS' } = req.query;
 
     try {
+        let resolvedSuffix = suffix;
+        if (resolvedSuffix === 'BSE') {
+            resolvedSuffix = 'BO';
+        } else if (resolvedSuffix === 'NSE') {
+            resolvedSuffix = 'NS';
+        }
         // Start date.
-        const period1 = calculateStartDate(period).toISOString();
-        // End date (today).
-        const period2 = new Date().toISOString();
-        // Set default interval.
-        const selectedInterval = interval || (period === '1m' ? '1d' : '1mo');
-
-        // Fetch historical data from Yahoo Finance.
-        const historicalData = await yahooFinance.historical(`${stockName}.${suffix}`, {
-            period1,
-            period2,
-            interval: selectedInterval,
-        });
+        const startDate = calculateStartDate(period);
+        // Fetch historical data from cached market data.
+        const historicalData = getHistory(stockName, resolvedSuffix, startDate);
 
         if (!historicalData || historicalData.length === 0) {
             return res.status(404).json({ error: 'No historical data found.' });
@@ -49,7 +46,7 @@ router.get('/stock/history/:stockName', async (req, res) => {
 
         // Format data for response.
         const formattedData = historicalData.map((item) => ({
-            date: new Date(item.date).toLocaleDateString(),
+            date: new Date(`${item.date}T00:00:00Z`).toLocaleDateString(),
             close: item.close,
         }));
 

@@ -1,19 +1,36 @@
 const express = require("express");
 const verifyToken = require("../middleware/verifyToken");
 const User = require("../models/User");
-const yahooFinance = require("yahoo-finance2").default;
+const { getQuote } = require("../utils/marketDataService");
 const fetchCompanyLogo = require("../utils/fetchCompanyLogo");
 const jwt = require("jsonwebtoken");
 const nseStocks = require("../data/nse-stocks.json");
+const bseStocks = require("../data/bse-stocks.json");
 
 const router = express.Router();
 
-const stockDomains = nseStocks.reduce((acc, stock) => {
+const stockDomains = [...nseStocks, ...bseStocks].reduce((acc, stock) => {
   if (stock.symbol && stock.website) {
-    acc[stock.symbol.trim()] = stock.website.trim();
+    acc[stock.symbol.trim().toUpperCase()] = stock.website.trim();
   }
   return acc;
 }, {});
+
+const createStockLookup = (stocks) =>
+  stocks.reduce((acc, stock) => {
+    if (stock.symbol) {
+      acc[stock.symbol.trim().toUpperCase()] = stock;
+    }
+    return acc;
+  }, {});
+
+const nseLookup = createStockLookup(nseStocks);
+const bseLookup = createStockLookup(bseStocks);
+
+const getStockMeta = (symbol, suffix) => {
+  const key = symbol.trim().toUpperCase();
+  return suffix === "BO" ? bseLookup[key] : nseLookup[key];
+};
 
 router.post("/portfolio/create", verifyToken, async (req, res) => {
   const { name, stocks } = req.body;
@@ -140,21 +157,24 @@ router.get("/portfolio/stocks", verifyToken, async (req, res) => {
           // Extract symbol from stock object.
           const { symbol } = stock;
 
-          // Fetch stock data from Yahoo Finance.
-          const stockData = await yahooFinance.quote(`${symbol}.${suffix}`);
+          // Fetch stock data from cached market data.
+          const stockData = getQuote(symbol, suffix);
+          if (!stockData) {
+            throw new Error("No cached quote found.");
+          }
 
           // Get domain and logo for the stock.
-          const domain = stockDomains[symbol];
+          const domain = stockDomains[symbol.trim().toUpperCase()];
           const logoUrl = domain ? await fetchCompanyLogo(domain) : null;
+          const meta = getStockMeta(symbol, suffix);
 
           return {
             symbol: symbol,
-            name:
-              stockData.longName || stockData.shortName || "Unknown Company",
-            price: stockData.regularMarketPrice,
-            change: stockData.regularMarketChange,
+            name: meta?.name || "Unknown Company",
+            price: stockData.close,
+            change: stockData.change,
             suffix: suffix,
-            changePercent: stockData.regularMarketChangePercent,
+            changePercent: stockData.changePercent,
             logo: logoUrl,
           };
         } catch (error) {

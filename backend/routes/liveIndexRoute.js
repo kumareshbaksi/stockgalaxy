@@ -1,6 +1,6 @@
 const express = require("express");
-const yahooFinance = require("yahoo-finance2").default;
 const { shouldForceRefresh } = require("../utils/cacheRefreshAuth");
+const { getIndexSnapshot, refreshMarketData } = require("../utils/marketDataService");
 
 const router = express.Router();
 
@@ -31,23 +31,24 @@ const setCachedIndex = (key, data) => {
   });
 };
 
+const safeNumber = (value) => (Number.isFinite(value) ? value : 0);
+
 // Endpoint: /api/live-index/:indexName
 router.get("/live-index/:indexName", async (req, res) => {
   const { indexName } = req.params;
 
-  // Mapping indexName to Yahoo Finance index symbols
-  const indexSymbols = {
-    nifty50: "^NSEI",      // Yahoo Finance symbol for NIFTY 50
-    sensex: "^BSESN",      // Yahoo Finance symbol for SENSEX
-    banknifty: "^NSEBANK", // Yahoo Finance symbol for Bank NIFTY
+  const indexKeys = {
+    nifty50: "nifty50",
+    sensex: "sensex",
+    banknifty: "banknifty",
   };
 
-  const yahooIndexSymbol = indexSymbols[indexName.toLowerCase()];
-  if (!yahooIndexSymbol) {
+  const indexKey = indexKeys[indexName.toLowerCase()];
+  if (!indexKey) {
     return res.status(400).json({ error: "Invalid index name provided." });
   }
 
-  const cacheKey = indexName.toLowerCase();
+  const cacheKey = indexKey;
   const forceRefresh = shouldForceRefresh(req);
   const cached = getCachedIndex(cacheKey);
   if (cached && !forceRefresh) {
@@ -55,27 +56,28 @@ router.get("/live-index/:indexName", async (req, res) => {
   }
 
   try {
-    // Fetch the live index data from Yahoo Finance
-    const indexData = await yahooFinance.quote(yahooIndexSymbol, {
-      fields: [
-        "symbol",
-        "shortName",
-        "longName",
-        "regularMarketPrice",
-        "regularMarketChange",
-        "regularMarketChangePercent",
-      ],
-    });
+    if (forceRefresh) {
+      await refreshMarketData({ reason: "force" });
+    }
+  } catch (error) {
+    console.error(`Error refreshing index data for ${indexName}:`, error.message);
+  }
 
-    // Send the live index data as a response
+  try {
+    // Fetch the cached index data from the market data service.
+    const indexData = getIndexSnapshot(indexKey);
+
     const payload = {
-      symbol: indexData.symbol,
-      name: indexData.longName || indexData.shortName || "Unknown Index",
-      price: indexData.regularMarketPrice,
-      change: indexData.regularMarketChange,
-      changePercent: indexData.regularMarketChangePercent,
+      symbol: indexData?.symbol || indexKey.toUpperCase(),
+      name: indexData?.name || "Unknown Index",
+      price: safeNumber(indexData?.price),
+      change: safeNumber(indexData?.change),
+      changePercent: safeNumber(indexData?.changePercent),
     };
-    setCachedIndex(cacheKey, payload);
+
+    if (indexData) {
+      setCachedIndex(cacheKey, payload);
+    }
     res.json(payload);
   } catch (error) {
     console.error(`Error fetching live index data for ${indexName}:`, error.message);

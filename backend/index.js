@@ -67,6 +67,11 @@ app.use("/api/auth", logoutRoute);
 const settingsRoutes = require('./routes/settingsRoutes');
 app.use('/api', settingsRoutes);
 
+const { initializeMarketData } = require('./utils/marketDataService');
+initializeMarketData().catch((error) => {
+    console.error('Failed to initialize market data service:', error.message);
+});
+
 if (process.env.NODE_ENV === 'production') {
     const root = path.join(__dirname, '..', 'frontend', 'build');
     app.use(express.static(root));

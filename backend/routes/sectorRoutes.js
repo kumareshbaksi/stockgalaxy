@@ -1,8 +1,8 @@
 const express = require('express');
-const yahooFinance = require('yahoo-finance2').default;
 const fetchCompanyLogo = require('../utils/fetchCompanyLogo');
 const { getIndexConstituents } = require('../utils/indexService');
 const { shouldForceRefresh } = require('../utils/cacheRefreshAuth');
+const { getQuoteMap, refreshMarketData } = require('../utils/marketDataService');
 const nseStocks = require('../data/nse-stocks.json');
 const bseStocks = require('../data/bse-stocks.json');
 
@@ -13,7 +13,6 @@ const QUOTE_CACHE_TTL_MS =
     process.env.INDEX_QUOTE_CACHE_TTL_MS || process.env.QUOTE_CACHE_TTL_MS || '3600000',
     10
   ) || 3600000;
-const QUOTE_BATCH_SIZE = Number.parseInt(process.env.QUOTE_BATCH_SIZE || '50', 10) || 50;
 const quoteResponseCache = new Map();
 
 const formatSectorName = (sector) => sector.replace(/-/g, '/').replace(/_/g, ' ');
@@ -46,52 +45,11 @@ const getSectorStocks = (sectorName, suffix) => {
   return source.filter((stock) => (stock.sector || '').trim().toLowerCase() === normalized);
 };
 
-const chunkSymbols = (symbols, size) => {
-  const chunks = [];
-  for (let i = 0; i < symbols.length; i += size) {
-    chunks.push(symbols.slice(i, i + size));
-  }
-  return chunks;
-};
-
-const mergeQuoteBatch = (target, batch) => {
-  if (!batch) {
-    return;
-  }
-  if (batch instanceof Map) {
-    batch.forEach((value, key) => {
-      target[key] = value;
-    });
-    return;
-  }
-  if (Array.isArray(batch)) {
-    batch.forEach((quote) => {
-      if (quote && quote.symbol) {
-        target[quote.symbol] = quote;
-      }
-    });
-    return;
-  }
-  Object.assign(target, batch);
-};
-
-const fetchQuoteMap = async (symbols) => {
+const fetchQuoteMap = (symbols, suffix) => {
   if (!symbols.length) {
     return {};
   }
-
-  const chunks = chunkSymbols(symbols, QUOTE_BATCH_SIZE);
-  const quotes = {};
-
-  for (const chunk of chunks) {
-    const batch = await yahooFinance.quote(chunk, {
-      return: 'object',
-      fields: ['symbol', 'regularMarketPrice', 'regularMarketChangePercent'],
-    });
-    mergeQuoteBatch(quotes, batch);
-  }
-
-  return quotes;
+  return getQuoteMap(symbols, suffix);
 };
 
 router.get('/index/:index', async (req, res) => {
@@ -115,6 +73,9 @@ router.get('/index/:index', async (req, res) => {
   }
 
   try {
+    if (forceRefresh) {
+      await refreshMarketData({ reason: 'force' });
+    }
     const constituents = await getIndexConstituents(normalizedIndex);
 
     if (!constituents || !constituents.length) {
@@ -123,16 +84,15 @@ router.get('/index/:index', async (req, res) => {
 
     const symbols = constituents
       .map((row) => row.symbol)
-      .filter(Boolean)
-      .map((symbol) => `${symbol}.${suffix}`);
-    const quoteMap = await fetchQuoteMap(symbols);
+      .filter(Boolean);
+    const quoteMap = fetchQuoteMap(symbols, suffix);
 
     const stocks = await Promise.all(
       constituents.map(async (row) => {
         const symbol = row.symbol;
         if (!symbol) return null;
 
-        const symbolKey = `${symbol}.${suffix}`;
+        const symbolKey = symbol.trim().toUpperCase();
         const quote =
           quoteMap[symbolKey] ||
           quoteMap[symbolKey.toUpperCase()] ||
@@ -144,8 +104,8 @@ router.get('/index/:index', async (req, res) => {
           symbol,
           suffix,
           name: row.name || 'Unknown',
-          price: quote?.regularMarketPrice ?? null,
-          change: quote?.regularMarketChangePercent ?? null,
+          price: quote?.close ?? null,
+          change: quote?.changePercent ?? null,
           sector: row.sector || 'Unknown',
           website: row.website || null,
           logo: logoUrl,
@@ -153,7 +113,9 @@ router.get('/index/:index', async (req, res) => {
       })
     );
 
-    const filteredStocks = stocks.filter((stock) => stock && stock.price !== null);
+    const filteredStocks = stocks.filter(
+      (stock) => stock && stock.price !== null && stock.change !== null
+    );
 
     if (!filteredStocks.length) {
       return res.status(404).json({ message: 'No valid stocks found.' });
@@ -193,6 +155,10 @@ router.get('/sector/:sector', async (req, res) => {
       return res.status(200).json(cached);
     }
 
+    if (forceRefresh) {
+      await refreshMarketData({ reason: 'force' });
+    }
+
     const sectorStocks = getSectorStocks(formattedSector, suffix);
 
     if (!sectorStocks.length) {
@@ -201,13 +167,12 @@ router.get('/sector/:sector', async (req, res) => {
 
     const symbols = sectorStocks
       .map((stock) => stock.symbol)
-      .filter(Boolean)
-      .map((symbol) => `${symbol}.${suffix}`);
-    const quoteMap = await fetchQuoteMap(symbols);
+      .filter(Boolean);
+    const quoteMap = fetchQuoteMap(symbols, suffix);
 
     const stocks = await Promise.all(
       sectorStocks.map(async (stock) => {
-        const symbolKey = `${stock.symbol}.${suffix}`;
+        const symbolKey = stock.symbol.trim().toUpperCase();
         const quote =
           quoteMap[symbolKey] ||
           quoteMap[symbolKey.toUpperCase()] ||
@@ -218,8 +183,8 @@ router.get('/sector/:sector', async (req, res) => {
           symbol: stock.symbol,
           suffix,
           name: stock.name,
-          price: quote?.regularMarketPrice ?? null,
-          change: quote?.regularMarketChangePercent ?? null,
+          price: quote?.close ?? null,
+          change: quote?.changePercent ?? null,
           sector: stock.sector,
           website: stock.website || null,
           logo: logoUrl || null,
