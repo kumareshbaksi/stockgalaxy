@@ -1,7 +1,7 @@
 const express = require('express');
 const verifyToken = require('../middleware/verifyToken');
 const { getStockList } = require('../utils/stockListService');
-const { getHistory } = require('../utils/marketDataService');
+const { ensureMarketData, getHistory } = require('../utils/marketDataService');
 
 const router = express.Router();
 // Helper function to calculate the start date based on the period
@@ -37,6 +37,7 @@ router.get('/stock/history/:stockName', async (req, res) => {
         }
         // Start date.
         const startDate = calculateStartDate(period);
+        await ensureMarketData({ suffix: resolvedSuffix });
         // Fetch historical data from cached market data.
         const historicalData = getHistory(stockName, resolvedSuffix, startDate);
 

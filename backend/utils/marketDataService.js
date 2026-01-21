@@ -11,7 +11,7 @@ const bseStocks = require('../data/bse-stocks.json');
 const CACHE_DIR = process.env.MARKET_DATA_CACHE_DIR || path.join(__dirname, '..', 'data', 'market-cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'market-data.json');
 const MARKET_DATA_TIMEZONE = process.env.MARKET_DATA_TIMEZONE || 'Asia/Kolkata';
-const MARKET_DATA_CRON = process.env.MARKET_DATA_CRON || '30 18 * * 1-5';
+const MARKET_DATA_CRON = process.env.MARKET_DATA_CRON || '0 16 * * 1-5';
 const LOOKBACK_DAYS = Number.parseInt(process.env.MARKET_DATA_LOOKBACK_DAYS || '10', 10) || 10;
 const HISTORY_MAX_DAYS = Number.parseInt(process.env.MARKET_DATA_HISTORY_MAX_DAYS || '0', 10) || 0;
 
@@ -518,6 +518,23 @@ const initializeMarketData = async () => {
 
 const getMarketBucket = (suffix) => (suffix === 'BO' ? cache.bse : cache.nse);
 
+const hasQuotes = (bucket) => Object.keys(bucket?.quotes || {}).length > 0;
+
+const hasIndices = () => Object.keys(cache.indices || {}).length > 0;
+
+const ensureMarketData = async ({ suffix, requireIndices = false } = {}) => {
+  const bucketReady = suffix ? hasQuotes(getMarketBucket(suffix)) : hasQuotes(cache.nse) || hasQuotes(cache.bse);
+  const indexReady = !requireIndices || hasIndices();
+  if (bucketReady && indexReady) {
+    return;
+  }
+  try {
+    await refreshMarketData({ reason: 'on-demand' });
+  } catch (error) {
+    console.error('On-demand market data refresh failed:', error.message);
+  }
+};
+
 const getQuote = (symbol, suffix) => {
   const key = normalizeSymbol(symbol);
   if (!key) return null;
@@ -558,6 +575,7 @@ const getIndexSnapshot = (indexName) => {
 module.exports = {
   initializeMarketData,
   refreshMarketData,
+  ensureMarketData,
   getQuote,
   getQuoteMap,
   getHistory,

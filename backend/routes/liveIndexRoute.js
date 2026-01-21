@@ -1,6 +1,6 @@
 const express = require("express");
 const { shouldForceRefresh } = require("../utils/cacheRefreshAuth");
-const { getIndexSnapshot, refreshMarketData } = require("../utils/marketDataService");
+const { ensureMarketData, getIndexSnapshot, refreshMarketData } = require("../utils/marketDataService");
 
 const router = express.Router();
 
@@ -59,6 +59,7 @@ router.get("/live-index/:indexName", async (req, res) => {
     if (forceRefresh) {
       await refreshMarketData({ reason: "force" });
     }
+    await ensureMarketData({ requireIndices: true });
   } catch (error) {
     console.error(`Error refreshing index data for ${indexName}:`, error.message);
   }

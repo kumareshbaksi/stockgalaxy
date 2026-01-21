@@ -1,7 +1,7 @@
 const express = require("express");
 const verifyToken = require("../middleware/verifyToken");
 const User = require("../models/User");
-const { getQuote } = require("../utils/marketDataService");
+const { ensureMarketData, getQuote } = require("../utils/marketDataService");
 const fetchCompanyLogo = require("../utils/fetchCompanyLogo");
 const jwt = require("jsonwebtoken");
 const nseStocks = require("../data/nse-stocks.json");
@@ -149,6 +149,8 @@ router.get("/portfolio/stocks", verifyToken, async (req, res) => {
 
     // Adjust the number of stocks based on the plan
     const stocksToProcess = portfolio.stocks;
+
+    await ensureMarketData({ suffix });
 
     // Enrich stock data
     const enrichedStocks = await Promise.all(

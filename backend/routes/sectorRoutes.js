@@ -2,7 +2,7 @@ const express = require('express');
 const fetchCompanyLogo = require('../utils/fetchCompanyLogo');
 const { getIndexConstituents } = require('../utils/indexService');
 const { shouldForceRefresh } = require('../utils/cacheRefreshAuth');
-const { getQuoteMap, refreshMarketData } = require('../utils/marketDataService');
+const { ensureMarketData, getQuoteMap, refreshMarketData } = require('../utils/marketDataService');
 const nseStocks = require('../data/nse-stocks.json');
 const bseStocks = require('../data/bse-stocks.json');
 
@@ -76,6 +76,7 @@ router.get('/index/:index', async (req, res) => {
     if (forceRefresh) {
       await refreshMarketData({ reason: 'force' });
     }
+    await ensureMarketData({ suffix });
     const constituents = await getIndexConstituents(normalizedIndex);
 
     if (!constituents || !constituents.length) {
@@ -158,6 +159,7 @@ router.get('/sector/:sector', async (req, res) => {
     if (forceRefresh) {
       await refreshMarketData({ reason: 'force' });
     }
+    await ensureMarketData({ suffix });
 
     const sectorStocks = getSectorStocks(formattedSector, suffix);
 
